@@ -2,7 +2,7 @@ const { Cashfree } = require('cashfree-pg');
 
 
 const cashfree = new Cashfree(
-  Cashfree.PRODUCTION,
+  Cashfree.SANDBOX,
   process.env.CLIENT_ID,
   process.env.CLIENT_SECRET
 );
@@ -31,6 +31,8 @@ const cashFreePayment = async (amount, userMobile, userName, userEmail, userId) 
     };
 
     const response = cashfree.PGCreateOrder(request);
+    console.log("💬 Raw Cashfree response:", response);
+    
 
     if (!response || !response.payment_session_id) {
       throw new Error("Invalid response from Cashfree");
