@@ -30,7 +30,7 @@ const cashFreePayment = async (amount, userMobile, userName, userEmail, userId) 
       order_note: "Rakhi Store Order",
     };
 
-    const response = cashfree.PGCreateOrder(request);
+    const response = await cashfree.PGCreateOrder(request);
     console.log("💬 Raw Cashfree response:", response);
     
 
