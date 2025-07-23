@@ -38,7 +38,7 @@ const orderCreate = async (req, res) => {
 
 const userOrderList = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { userId } = req.params.id;
 
     if (!userId) {
       return res.status(400).json({ message: "User ID is required" });
