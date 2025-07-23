@@ -30,7 +30,7 @@ const cashFreePayment = async (amount, userMobile, userName, userEmail, userId) 
       order_note: "Rakhi Store Order",
     };
 
-    const response = await cashfree.PG.orders.create("2023-08-01", request);
+    const response = await cashfree.PGCreateOrder("2023-08-01", request);
 
     if (!response || !response.payment_session_id) {
       throw new Error("Invalid response from Cashfree");
