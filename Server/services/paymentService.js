@@ -1,10 +1,11 @@
-const { Cashfree } = require("cashfree-pg");
+const { Cashfree } = require('cashfree-pg');
 
 
-Cashfree.XClientId = process.env.CLIENT_ID
-Cashfree.XClientSecret = process.env.CLIENT_SECRET
-Cashfree.XEnvironment = Cashfree.Environment.PRODUCTION
-
+const cashfree = new Cashfree(
+  "production", // or Cashfree.ENVIRONMENT.PRODUCTION (should work, but using string avoids any future SDK issues)
+  process.env.CLIENT_ID,
+  process.env.CLIENT_SECRET
+);
 // ✅ Generate unique Order ID
 const generateOrderId = () => "ORD" + Date.now();
 
@@ -29,7 +30,7 @@ const cashFreePayment = async (amount, userMobile, userName, userEmail, userId) 
       order_note: "Rakhi Store Order",
     };
 
-    const response = await Cashfree.PGCreateOrder("2023-08-01", request);
+    const response = await cashfree.PG.orders.create("2023-08-01", request);
 
     if (!response || !response.payment_session_id) {
       throw new Error("Invalid response from Cashfree");
