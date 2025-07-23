@@ -28,7 +28,8 @@ const getOrders = async (userID) => {
   try {
     const orders = await Order.find({ user: userID })
       .sort({ createdAt: -1 })
-      .select('status totalAmount address paymentMethod createdAt')
+      .select('status totalAmount address paymentMethod createdAt items')
+      .populate('items.product', 'name quantity') // only get product name
       .lean();
 
     return orders;

@@ -49,48 +49,45 @@ const MyOrdersPage = () => {
     }
   };
 
-  
-
-useEffect(() => {
-  const fetchOrders = async () => {
-    const storedUser = localStorage.getItem('user');
-    if (!storedUser) {
-        navigate('/auth'); // ✅ Redirect to login if no user
+  useEffect(() => {
+    const fetchOrders = async () => {
+      const storedUser = localStorage.getItem("user");
+      if (!storedUser) {
+        navigate("/auth"); // ✅ Redirect to login if no user
         return;
       }
-    
-    let userId;
+
+      let userId;
       try {
         const parsedUser = JSON.parse(storedUser);
         userId = parsedUser._id;
         if (!userId) {
-          navigate('/auth'); // ✅ Redirect if _id is missing
+          navigate("/auth"); // ✅ Redirect if _id is missing
           return;
         }
       } catch (e) {
         console.error("Invalid user data in localStorage");
-        navigate('/auth'); // ✅ Redirect if JSON is bad
+        navigate("/auth"); // ✅ Redirect if JSON is bad
         return;
       }
-    try {
-      const res = await axios.get(`https://bandhanbliss.vercel.app/api/orders/user/${userId}`);
-      setOrders(res.data);
-      
-      
-    } catch (err) {
-      console.error("Error fetching orders:", err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+      try {
+        const res = await axios.get(
+          `https://bandhanbliss.vercel.app/api/orders/user/${userId}`
+        );
+        setOrders(res.data);
+      } catch (err) {
+        console.error("Error fetching orders:", err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  fetchOrders();
-}, [navigate]);
-
+    fetchOrders();
+  }, [navigate]);
 
   const filterOrders = (status) => {
     if (status === "all") return orders;
-    return orders.filter(order => order.status === status);
+    return orders.filter((order) => order.status === status);
   };
 
   const OrderCard = ({ order }) => (
@@ -98,18 +95,37 @@ useEffect(() => {
       {/* Header with Order Number and Status */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="font-semibold text-lg text-gray-800">{order.orderNumber}</h3>
+          <h3 className="font-semibold text-lg text-gray-800">
+            {order.orderNumber}
+          </h3>
           <p className="text-sm text-gray-600">
-            {new Date(order.date).toLocaleDateString('en-IN', {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric'
+            {new Date(order.date).toLocaleDateString("en-IN", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
             })}
           </p>
         </div>
-        <div className={`px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1 ${getStatusColor(order.status)}`}>
+        <div
+          className={`px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1 ${getStatusColor(
+            order.status
+          )}`}
+        >
           {getStatusIcon(order.status)}
           <span className="capitalize">{order.status}</span>
+        </div>
+      </div>
+
+      {/* Order Items */}
+      <div className="bg-blue-50 p-3 rounded-lg mb-4">
+        <p className="text-sm text-gray-600 mb-2">Items Ordered</p>
+        <div className="text-sm text-gray-800">
+          {order.items.map((item, index) => (
+            <span key={index}>
+              {item.name} (Qty: {item.qty})
+              {index < order.items.length - 1 && ", "}
+            </span>
+          ))}
         </div>
       </div>
 
@@ -118,7 +134,9 @@ useEffect(() => {
         {/* Amount */}
         <div className="bg-gray-50 p-3 rounded-lg">
           <p className="text-sm text-gray-600 mb-1">Total Amount</p>
-          <p className="font-bold text-xl text-gray-800">₹{order.totalAmount}</p>
+          <p className="font-bold text-xl text-gray-800">
+            ₹{order.totalAmount}
+          </p>
         </div>
 
         {/* Payment Method */}
@@ -126,7 +144,11 @@ useEffect(() => {
           <p className="text-sm text-gray-600 mb-1">Payment Method</p>
           <div className="flex items-center space-x-2">
             <CreditCard className="w-4 h-4 text-blue-500" />
-            <p className="font-medium text-gray-800">{order.paymentMethod === "upi" ? "Online Payment":"Cash on Delivery"}</p>
+            <p className="font-medium text-gray-800">
+              {order.paymentMethod === "upi"
+                ? "Online Payment"
+                : "Cash on Delivery"}
+            </p>
           </div>
         </div>
 
@@ -135,7 +157,9 @@ useEffect(() => {
           <p className="text-sm text-gray-600 mb-1">Delivery Address</p>
           <div className="flex items-start space-x-2">
             <MapPin className="w-4 h-4 text-red-500 mt-1 flex-shrink-0" />
-            <p className="font-medium text-gray-800 text-sm leading-5">{order.address}</p>
+            <p className="font-medium text-gray-800 text-sm leading-5">
+              {order.address}
+            </p>
           </div>
         </div>
       </div>
@@ -154,7 +178,7 @@ useEffect(() => {
           <p className="text-gray-600 mt-1">Track and manage your rakhi orders</p>
         </div>
       </div> */}
-      <Navbar/>
+      <Navbar />
 
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Filter Tabs */}
@@ -162,10 +186,18 @@ useEffect(() => {
           <div className="flex flex-wrap gap-2">
             {[
               { key: "all", label: "All Orders", count: orders.length },
-              { key: "Pending", label: "Processing", count: orders.filter(o => o.status === "processing").length },
-            //   { key: "shipped", label: "Shipped", count: orders.filter(o => o.status === "shipped").length },
-            //   { key: "delivered", label: "Delivered", count: orders.filter(o => o.status === "delivered").length },
-              { key: "cancelled", label: "Cancelled", count: orders.filter(o => o.status === "cancelled").length },
+              {
+                key: "Pending",
+                label: "Processing",
+                count: orders.filter((o) => o.status === "processing").length,
+              },
+              //   { key: "shipped", label: "Shipped", count: orders.filter(o => o.status === "shipped").length },
+              //   { key: "delivered", label: "Delivered", count: orders.filter(o => o.status === "delivered").length },
+              {
+                key: "cancelled",
+                label: "Cancelled",
+                count: orders.filter((o) => o.status === "cancelled").length,
+              },
             ].map((tab) => (
               <button
                 key={tab.key}
@@ -193,10 +225,9 @@ useEffect(() => {
                 No orders found
               </h3>
               <p className="text-gray-600 mb-6">
-                {activeTab === "all" 
+                {activeTab === "all"
                   ? "You haven't placed any orders yet. Start shopping for beautiful rakhis!"
-                  : `No ${activeTab} orders found.`
-                }
+                  : `No ${activeTab} orders found.`}
               </p>
               {activeTab === "all" && (
                 <button className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-3 rounded-lg hover:from-orange-600 hover:to-red-600 transition-all">
