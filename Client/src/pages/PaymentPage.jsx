@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
   ShoppingBag,
@@ -16,6 +16,7 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Button } from "../components/Button";
+import { load } from "@cashfreepayments/cashfree-js";
 
 const PaymentPage = () => {
   const [formData, setFormData] = useState({
@@ -31,9 +32,10 @@ const PaymentPage = () => {
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [showThankYou, setShowThankYou] = useState(false);
-  const [userId, setUserId] = useState(null);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const cashfreeRef = useRef(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -41,7 +43,7 @@ const PaymentPage = () => {
     if (storedUser) {
       try {
         const parsed = JSON.parse(storedUser);
-        setUserId(parsed._id);
+        setUser(parsed);
       } catch (err) {
         console.error("Invalid user data:", err);
       }
@@ -96,46 +98,120 @@ const PaymentPage = () => {
     }
   };
 
+  useEffect(() => {
+    const initializeSDK = async () => {
+      try {
+        if (!cashfreeRef.current) {
+          cashfreeRef.current = await load({
+            mode: "sandbox", // or "sandbox" for testing
+          });
+        }
+      } catch (error) {
+        console.error("❌ Cashfree SDK Initialization Failed:", error);
+      }
+    };
+    initializeSDK();
+  }, []);
+
   const handlePayment = async () => {
     if (!selectedAddress || !paymentMethod) {
       alert("Please select delivery address and payment method.");
       return;
     }
+
     setIsLoading(true);
+
     try {
       let paymentId = null;
+
       const addressObj = savedAddresses.find(
         (addr) => addr.id === selectedAddress
       );
+
       const orderData = {
-        user: userId,
+        user: user._id,
         items: order.items.map((item) => ({
-          product: item._id, // Make sure item has _id from DB
+          product: item._id,
           quantity: item.qty,
         })),
         totalAmount: order.totalAmount,
         address: `${addressObj.name}, ${addressObj.address}, Phone: ${addressObj.phone}`,
-        paymentMethod: paymentMethod,
+        paymentMethod,
         transactionId: paymentId,
       };
-      console.log(orderData);
 
-      const data = await axios.post(
-        "https://bandhanbliss.vercel.app/api/orders",
-        orderData
-      );
-      if (data.data.success) {
-        setShowThankYou(true);
-        localStorage.removeItem("cartItems");
+      // ✅ COD
+      if (paymentMethod === "cod") {
+        const response = await axios.post(
+          "https://bandhanbliss.vercel.app/api/orders",
+          orderData
+        );
+
+        if (response.data.success) {
+          setShowThankYou(true);
+          localStorage.removeItem("cartItems");
+        } else {
+          throw new Error("Order creation failed.");
+        }
       }
-      console.log(data);
+
+      // ✅ Online Payment
+      else {
+        const ORDER_ID = `ORDER_${Date.now()}`;
+        const payment = await axios.post("https://bandhanbliss.vercel.app/api/payment", {
+          amount: order.totalAmount,
+          userId: user._id,
+          userName: user.name,
+          userEmail: user.email,
+          userMobile: user.phone,
+          order_id: ORDER_ID,
+        });
+        console.log(payment.data);
+        
+        const orderId = payment.data.order_id;
+        const paymentSessionId = payment.data.payment_session_id;
+        if (!paymentSessionId) {
+          throw new Error("Payment session ID not received.");
+        }
+
+        await cashfreeRef.current.checkout({
+          paymentSessionId,
+          redirectTarget: "_modal", //(if using _self or _blank).
+        });
+
+        // ✅ After checkout completes (modal closes), verify payment:
+        const verifyRes = await axios.get(
+          `https://bandhanbliss.vercel.app/api/payment/verify/${orderId}`
+        );
+        console.log(verifyRes.data);
+        
+
+        if (verifyRes.data.order_status === "PAID") {
+          // Create order in DB now
+          const response = await axios.post(
+            "https://bandhanbliss.vercel.app/api/orders",
+            {
+              ...orderData,
+              transactionId: verifyRes.data.cf_order_id,
+            }
+          );
+
+          if (response.data.success) {
+            setShowThankYou(true);
+            localStorage.removeItem("cartItems");
+          } else {
+            throw new Error("Order DB entry failed.");
+          }
+        } else {
+          alert("❌ Payment failed or not completed.");
+        }
+      }
     } catch (err) {
-      console.log(err);
+      console.error("❌ Payment Error:", err);
+      alert("Payment failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
-    // setShowThankYou(true);
-    // localStorage.removeItem("cartItems");
   };
 
   const closeSuccessModal = () => {

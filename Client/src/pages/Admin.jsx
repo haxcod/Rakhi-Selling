@@ -48,7 +48,9 @@ const AdminPanel = () => {
 
   const fetchProducts = useCallback(async () => {
     try {
-      const response = await axios.get("https://bandhanbliss.vercel.app/api/products");
+      const response = await axios.get(
+        "https://bandhanbliss.vercel.app/api/products"
+      );
       setProducts(response.data.products);
       setProductLoading(false);
     } catch (error) {
@@ -60,12 +62,15 @@ const AdminPanel = () => {
 
   const fetchOrders = useCallback(async () => {
     try {
-      const response = await axios.get("https://bandhanbliss.vercel.app/api/orders");
+      const response = await axios.get(
+        "https://bandhanbliss.vercel.app/api/orders"
+      );
+      console.log(response.data.orders);
+
       // setProducts(response.data.orders);
       const formatted = formatOrders(response.data.orders || []); // <--- convert raw to UI-friendly
       setOrders(formatted);
       // setOrderLoading(false);
-      console.log(response.data.orders);
     } catch (error) {
       console.error("Failed to fetch order:", error.message);
     } finally {
@@ -91,6 +96,9 @@ const AdminPanel = () => {
       status: order.status?.toLowerCase() || "pending",
       orderDate: new Date(order.createdAt).toISOString().split("T")[0],
       deliveryDate: "", // You can compute or assign this separately
+      paymentMethod: order.paymentMethod,
+      transactionId: order.transactionId,
+      paymentSuccess: order.transactionId ? "✅" : "❌",
     }));
   };
 
@@ -110,7 +118,10 @@ const AdminPanel = () => {
         reviews: Math.floor(Math.random() * (500 - 60 + 1)) + 60,
       };
       try {
-        await axios.post("https://bandhanbliss.vercel.app/api/products", product);
+        await axios.post(
+          "https://bandhanbliss.vercel.app/api/products",
+          product
+        );
         alert("Product Created");
       } catch (error) {
         console.error("Failed to add product:", error);
@@ -143,7 +154,9 @@ const AdminPanel = () => {
       if (!confirmed) return;
       setProductDeleteLoading(true);
       try {
-        await axios.delete(`https://bandhanbliss.vercel.app/api/products/${id}`);
+        await axios.delete(
+          `https://bandhanbliss.vercel.app/api/products/${id}`
+        );
         setProducts(products.filter((p) => p._id !== id));
       } catch (error) {
         console.error("Failed to delete product:", error.message);
@@ -715,6 +728,15 @@ const AdminPanel = () => {
                   <p>Phone: {selectedOrder.phone}</p>
                   <p>Address: {selectedOrder.address}</p>
                 </div>
+                <hr />
+                <div>
+                  <h4 className="font-medium">Payment Info</h4>
+                  {/* <p>Name: {selectedOrder.}</p> */}
+                  <p>Payment Method: {selectedOrder.paymentMethod}</p>
+                  <p>Success: {selectedOrder.paymentSuccess}</p>
+                  <p>Transaction Id: {selectedOrder.transactionId || "cash on"}</p>
+                </div>
+                <hr />
                 <div>
                   <h4 className="font-medium">Order Items</h4>
                   {selectedOrder.items.map((item, index) => (

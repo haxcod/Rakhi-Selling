@@ -1,11 +1,14 @@
-const { cashFreePayment, cashFreeVerify } = require("../services/paymentService");
+const axios = require("axios");
+
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
 
 // ✅ Create Payment Controller
 const createPayment = async (req, res) => {
   try {
-    const { amount, userId, userName, userEmail, userMobile } = req.body;
+    const { amount, userId, userName, userEmail, userMobile, order_id } = req.body;
 
-    if (!amount || !userId || !userName || !userEmail || !userMobile) {
+    if (!amount || !userId || !userName || !userEmail || !userMobile || !order_id) {
       return res.status(400).json({
         success: false,
         message: "Missing required fields",
@@ -13,19 +16,44 @@ const createPayment = async (req, res) => {
     }
 
     // Call service
-    const response = await cashFreePayment(amount, userMobile, userName, userEmail, userId);
+    const response = await axios.post(
+      "https://sandbox.cashfree.com/pg/orders",
+      {
+        order_id,
+        order_amount: amount,
+        order_currency: "INR",
+        customer_details: {
+          customer_id: userId,
+          customer_email: userEmail,
+          customer_phone: userMobile,
+          customer_name: userName,
+        },
+        order_note: "Bandhan Bliss Order",
+        order_meta: {
+          return_url: `https://bandhanbliss.shop/payment-status?order_id=${order_id}`,
+        },
+      },
+      {
+        headers: {
+          "x-client-id": CLIENT_ID,
+          "x-client-secret": CLIENT_SECRET,
+          "x-api-version": "2022-09-01",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const { payment_session_id } = response.data;
+    if (!payment_session_id) {
+      return res.status(400).json({ success: false, error: "Invalid response from Cashfree" });
+    }
+    res.status(200).json({ success: true, order_id, payment_session_id });
 
-    return res.status(200).json({
-      success: true,
-      message: "Payment initiated successfully",
-      data: response,
-    });
-  } catch (err) {
-    console.error("❌ Error in creating payment:", err.message);
-    return res.status(500).json({
+  } catch (error) {
+    console.error("❌ Error in creating payment:", error.response?.data || error.message);
+    res.status(401).json({
       success: false,
       message: "Payment creation failed",
-      error: err.message,
+      error: error.response?.data || error.message,
     });
   }
 };
@@ -42,20 +70,18 @@ const verifyPayment = async (req, res) => {
   }
 
   try {
-    const status = await cashFreeVerify(orderId);
+    const response = await axios.get(`https://sandbox.cashfree.com/pg/orders/${orderId}`, {
+      headers: {
+        'x-client-id': process.env.CLIENT_ID,
+        'x-client-secret': process.env.CLIENT_SECRET,
+        'x-api-version': '2025-01-01'
+      }
+    });
 
-    return res.status(200).json({
-      success: true,
-      message: "Payment status fetched",
-      data: status,
-    });
+    res.json(response.data);
   } catch (err) {
-    console.error("❌ Payment verification failed:", err.message);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to verify payment",
-      error: err.message,
-    });
+    console.error('❌ Error verifying payment:', err.response?.data || err.message);
+    res.status(500).json({ error: 'Failed to verify payment' });
   }
 };
 
