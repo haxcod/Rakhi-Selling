@@ -9,6 +9,7 @@ const PORT = 3000;
 const orderRoutes = require('./routes/orderRoutes')
 const userRoutes = require('./routes/userRoutes')
 const productRoutes = require('./routes/productRoutes')
+const paymentRoutes = require('./routes/paymentRoutes');
 
 
 // Middleware
@@ -21,6 +22,7 @@ app.use(cors())
 userRoutes(app)
 productRoutes(app)
 orderRoutes(app)
+paymentRoutes(app)
 // Test Route
 
 app.use(express.static(path.join(__dirname, '../Client/dist')));
