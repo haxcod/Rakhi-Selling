@@ -23,9 +23,9 @@ const MyOrdersPage = () => {
     switch (status) {
       case "delivered":
         return "text-green-600 bg-green-100";
-      case "shipped":
+      case "accepted":
         return "text-blue-600 bg-blue-100";
-      case "processing":
+      case "Pending":
         return "text-orange-600 bg-orange-100";
       case "cancelled":
         return "text-red-600 bg-red-100";
@@ -38,9 +38,9 @@ const MyOrdersPage = () => {
     switch (status) {
       case "delivered":
         return <CheckCircle className="w-4 h-4" />;
-      case "shipped":
+      case "accepted":
         return <Truck className="w-4 h-4" />;
-      case "processing":
+      case "Pending":
         return <Clock className="w-4 h-4" />;
       case "cancelled":
         return <Package className="w-4 h-4" />;
@@ -75,8 +75,6 @@ useEffect(() => {
     try {
       const res = await axios.get(`https://bandhanbliss.vercel.app/api/orders/user/${userId}`);
       setOrders(res.data);
-      console.log(userId);
-      console.log(res.data);
       
       
     } catch (err) {
@@ -137,7 +135,7 @@ useEffect(() => {
           <p className="text-sm text-gray-600 mb-1">Delivery Address</p>
           <div className="flex items-start space-x-2">
             <MapPin className="w-4 h-4 text-red-500 mt-1 flex-shrink-0" />
-            <p className="font-medium text-gray-800 text-sm leading-5">{order.deliveryAddress}</p>
+            <p className="font-medium text-gray-800 text-sm leading-5">{order.address}</p>
           </div>
         </div>
       </div>
@@ -164,7 +162,7 @@ useEffect(() => {
           <div className="flex flex-wrap gap-2">
             {[
               { key: "all", label: "All Orders", count: orders.length },
-              { key: "processing", label: "Processing", count: orders.filter(o => o.status === "processing").length },
+              { key: "Pending", label: "Processing", count: orders.filter(o => o.status === "processing").length },
             //   { key: "shipped", label: "Shipped", count: orders.filter(o => o.status === "shipped").length },
             //   { key: "delivered", label: "Delivered", count: orders.filter(o => o.status === "delivered").length },
               { key: "cancelled", label: "Cancelled", count: orders.filter(o => o.status === "cancelled").length },
