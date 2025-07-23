@@ -156,7 +156,7 @@ const ProductPage = () => {
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
-      let url = "http://localhost:3000/api/products";
+      let url = "https://bandhanbliss.vercel.app/api/products";
       if (category) {
         url += `?category=${encodeURIComponent(category)}`;
       }

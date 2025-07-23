@@ -48,7 +48,7 @@ const AdminPanel = () => {
 
   const fetchProducts = useCallback(async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/products");
+      const response = await axios.get("https://bandhanbliss.vercel.app/api/products");
       setProducts(response.data.products);
       setProductLoading(false);
     } catch (error) {
@@ -60,7 +60,7 @@ const AdminPanel = () => {
 
   const fetchOrders = useCallback(async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/orders");
+      const response = await axios.get("https://bandhanbliss.vercel.app/api/orders");
       // setProducts(response.data.orders);
       const formatted = formatOrders(response.data.orders || []); // <--- convert raw to UI-friendly
       setOrders(formatted);
@@ -110,7 +110,7 @@ const AdminPanel = () => {
         reviews: Math.floor(Math.random() * (500 - 60 + 1)) + 60,
       };
       try {
-        await axios.post("http://localhost:3000/api/products", product);
+        await axios.post("https://bandhanbliss.vercel.app/api/products", product);
         alert("Product Created");
       } catch (error) {
         console.error("Failed to add product:", error);
@@ -143,7 +143,7 @@ const AdminPanel = () => {
       if (!confirmed) return;
       setProductDeleteLoading(true);
       try {
-        await axios.delete(`http://localhost:3000/api/products/${id}`);
+        await axios.delete(`https://bandhanbliss.vercel.app/api/products/${id}`);
         setProducts(products.filter((p) => p._id !== id));
       } catch (error) {
         console.error("Failed to delete product:", error.message);
@@ -161,7 +161,7 @@ const AdminPanel = () => {
     try {
       const newStock =
         currentStock === 0 ? Math.floor(Math.random() * 16) + 5 : 0;
-      await axios.patch(`http://localhost:3000/api/products/${id}`, {
+      await axios.patch(`https://bandhanbliss.vercel.app/api/products/${id}`, {
         stock: newStock,
       });
       setProducts((prevProducts) =>
@@ -190,7 +190,7 @@ const AdminPanel = () => {
     try {
       // Send update request to backend
       const res = await axios.patch(
-        `http://localhost:3000/api/orders/${orderId}`,
+        `https://bandhanbliss.vercel.app/api/orders/${orderId}`,
         { status }
       );
       console.log(res);

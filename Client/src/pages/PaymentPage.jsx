@@ -121,7 +121,7 @@ const PaymentPage = () => {
       console.log(orderData);
 
       const data = await axios.post(
-        "http://localhost:3000/api/orders",
+        "https://bandhanbliss.vercel.app/api/orders",
         orderData
       );
       if (data.data.success) {

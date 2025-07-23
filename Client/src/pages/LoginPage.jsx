@@ -81,7 +81,7 @@ const LoginPage = () => {
       if (isLogin) {
         // Login
         let response;
-        response = await axios.post("http://localhost:3000/api/auth", {
+        response = await axios.post("https://bandhanbliss.vercel.app/api/auth", {
           email: formData.email,
           password: formData.password,
         });
@@ -92,7 +92,7 @@ const LoginPage = () => {
         navigate(-1);
       } else {
         // Signup
-        await axios.post("http://localhost:3000/api/user", formData);
+        await axios.post("https://bandhanbliss.vercel.app/api/user", formData);
         alert("Account created successfully! Welcome to RakhiStore!");
         setIsLogin(true);
         setFormData({
