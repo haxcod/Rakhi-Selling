@@ -8,6 +8,7 @@ const navItems = [
   { key: "cart", label: "Cart" },
   { key: "about", label: "About" },
   { key: "contact", label: "Contact" },
+   { key: "my-orders", label: "Orders" },
 ];
 
 const Navbar = () => {

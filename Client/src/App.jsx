@@ -13,6 +13,7 @@ import ContactPage from "./pages/ContactPage";
 import CartPage from "./pages/CartPage";
 import ScrollToTop from "./hooks/ScrollToTop";
 import ProtectedRoute from "./hooks/ProtectedRoute";
+import MyOrdersPage from "./pages/MyOrders";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
         <Route path="/cart" element={<CartPage />} />
         <Route path="/products" element={<ProductPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/my-orders" element={<MyOrdersPage />} />
         <Route
           path="/kundan-ashish-rakhi-startup"
           element={

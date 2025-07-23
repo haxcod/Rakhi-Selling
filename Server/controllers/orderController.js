@@ -2,6 +2,7 @@ const {
   createOrder,
   getAllOrders,
   updateOrder,
+  getOrders
 } = require('../services/orderService');
 const sendConfirmEmail = require('../utils/email');
 
@@ -32,6 +33,23 @@ const orderCreate = async (req, res) => {
     res.status(201).json({ success: true, order });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
+  }
+};
+
+const userOrderList = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    const orders = await getOrders(userId);
+    res.json(orders);
+    
+  } catch (err) {
+    console.error("Error fetching orders:", err.message);
+    res.status(500).json({ message: 'Failed to fetch orders' });
   }
 };
 
@@ -87,4 +105,5 @@ module.exports = {
   orderCreate,
   orderList,
   orderUpdate,
+  userOrderList,
 };

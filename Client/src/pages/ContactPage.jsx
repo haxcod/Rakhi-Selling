@@ -25,6 +25,7 @@ import {
 import Navbar from "../components/NavBar";
 import Footer from "../components/Footer";
 import { Button } from "../components/Button";
+import { useNavigate } from "react-router-dom";
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -35,6 +36,7 @@ const ContactPage = () => {
     message: "",
     inquiryType: "general",
   });
+  const navigate = useNavigate();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -53,7 +55,7 @@ const ContactPage = () => {
     {
       icon: Phone,
       title: "Phone Support",
-      details: ["+91 98765 43210", "+91 87654 32109"],
+      details: ["+91 95401 26491",],
       subtitle: "Mon-Sat: 9:00 AM - 8:00 PM",
       color: "text-green-600",
       bgColor: "bg-green-100",
@@ -61,7 +63,7 @@ const ContactPage = () => {
     {
       icon: Mail,
       title: "Email Support",
-      details: ["support@bandhanbliss.com", "orders@bandhanbliss.com"],
+      details: ["support@bandhanbliss.shop", "order@bandhanbliss.shop"],
       subtitle: "We'll respond within 24 hours",
       color: "text-blue-600",
       bgColor: "bg-blue-100",
@@ -69,7 +71,7 @@ const ContactPage = () => {
     {
       icon: MapPin,
       title: "Visit Our Store",
-      details: ["123 Traditional Street", "Kanpur, Uttar Pradesh 208001"],
+      details: ["Mayur Vihar 3", "Delhi"],
       subtitle: "Open Mon-Sat: 10:00 AM - 7:00 PM",
       color: "text-purple-600",
       bgColor: "bg-purple-100",
@@ -406,11 +408,13 @@ const ContactPage = () => {
                         icon: Facebook,
                         color: "text-blue-600",
                         bg: "bg-blue-100",
+                        link:"https://www.facebook.com/share/1FBziFkxYD/"
                       },
                       {
                         icon: Instagram,
                         color: "text-pink-600",
                         bg: "bg-pink-100",
+                        link:"https://www.instagram.com/bandhanbliss.shop?igsh=MTU4cjNmNzZiaGlxMw=="
                       },
                       {
                         icon: Twitter,
@@ -426,6 +430,7 @@ const ContactPage = () => {
                       <button
                         key={index}
                         className={`p-3 rounded-xl ${social.bg} hover:scale-110 transition-transform duration-200`}
+                       onClick={() => window.location.href = social.link}
                       >
                         <social.icon className={`w-6 h-6 ${social.color}`} />
                       </button>
