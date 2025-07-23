@@ -2,7 +2,7 @@ const { Cashfree } = require('cashfree-pg');
 
 
 const cashfree = new Cashfree(
-  "production", // or Cashfree.ENVIRONMENT.PRODUCTION (should work, but using string avoids any future SDK issues)
+  Cashfree.PRODUCTION,
   process.env.CLIENT_ID,
   process.env.CLIENT_SECRET
 );
@@ -30,7 +30,7 @@ const cashFreePayment = async (amount, userMobile, userName, userEmail, userId) 
       order_note: "Rakhi Store Order",
     };
 
-    const response = await cashfree.PGCreateOrder("2023-08-01", request);
+    const response = cashfree.PGCreateOrder(request);
 
     if (!response || !response.payment_session_id) {
       throw new Error("Invalid response from Cashfree");
@@ -50,7 +50,7 @@ const cashFreePayment = async (amount, userMobile, userName, userEmail, userId) 
 // ✅ Verify Cashfree payment status
 const cashFreeVerify = async (orderId) => {
   try {
-    const response = await Cashfree.PGFetchOrder("2023-08-01", orderId);
+    const response = await cashfree.PGFetchOrder(orderId);
 
     if (!response || !response.order_status) {
       throw new Error("Invalid response during verification");
