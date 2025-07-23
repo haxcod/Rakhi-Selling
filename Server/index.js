@@ -23,9 +23,9 @@ productRoutes(app)
 orderRoutes(app)
 // Test Route
 
-app.use(express.static(path.join(__dirname, '../Rakhi-Selling/dist')));
+app.use(express.static(path.join(__dirname, '../Client/dist')));
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../Rakhi-Selling/dist/index.html'));
+  res.sendFile(path.join(__dirname, '../Client/dist/index.html'));
 });
 
 const startServer = async () => {
