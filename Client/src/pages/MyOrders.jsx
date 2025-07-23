@@ -75,6 +75,7 @@ const MyOrdersPage = () => {
           `https://bandhanbliss.vercel.app/api/orders/user/${userId}`
         );
         setOrders(res.data);
+        console.log(res.data);
       } catch (err) {
         console.error("Error fetching orders:", err.message);
       } finally {
@@ -95,11 +96,12 @@ const MyOrdersPage = () => {
       {/* Header with Order Number and Status */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="font-semibold text-lg text-gray-800">
-            {order.orderNumber}
+          <h3 className="font-semibold text-[12px] uppercase text-gray-400">
+            Order ID: <br />{order._id}
           </h3>
+          <br />
           <p className="text-sm text-gray-600">
-            {new Date(order.date).toLocaleDateString("en-IN", {
+            {new Date(order.createdAt).toLocaleDateString("en-IN", {
               day: "numeric",
               month: "long",
               year: "numeric",
@@ -118,14 +120,16 @@ const MyOrdersPage = () => {
 
       {/* Order Items */}
       <div className="bg-blue-50 p-3 rounded-lg mb-4">
-        <p className="text-sm text-gray-600 mb-2">Items Ordered</p>
+        <p className="text-sm text-gray-600 mb-2">Items Ordered:</p>
         <div className="text-sm text-gray-800">
-          {order.items.map((item, index) => (
-            <span key={index}>
-              {item.name} (Qty: {item.qty})
-              {index < order.items.length - 1 && ", "}
-            </span>
-          ))}
+          <span>
+            {order.items.map((item, index) => (
+              <span key={item._id}>
+                {item.product?.name} (Qty: {item.quantity})
+                {index < order.items.length - 1 && <br />}
+              </span>
+            ))}
+          </span>
         </div>
       </div>
 
