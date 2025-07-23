@@ -126,7 +126,7 @@ useEffect(() => {
           <p className="text-sm text-gray-600 mb-1">Payment Method</p>
           <div className="flex items-center space-x-2">
             <CreditCard className="w-4 h-4 text-blue-500" />
-            <p className="font-medium text-gray-800">{order.paymentMethod}</p>
+            <p className="font-medium text-gray-800">{order.paymentMethod === "upi" ? "Online Payment":"Cash on Delivery"}</p>
           </div>
         </div>
 
