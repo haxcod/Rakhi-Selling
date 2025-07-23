@@ -1,15 +1,5 @@
-import { useState } from "react";
-import {
-  Heart,
-  LogOut,
-  Menu,
-  User,
-  X,
-  ChevronDown,
-  Settings,
-  UserCircle,
-  Bell,
-} from "lucide-react";
+import { useEffect, useState } from "react";
+import { LogOut, Menu, X, ChevronDown } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const navItems = [
@@ -29,27 +19,32 @@ const Navbar = () => {
     location.pathname === "/" ? "home" : location.pathname.slice(1);
 
   // Demo states - you can replace with real auth logic
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [user, setUser] = useState({
-    name: "John Doe",
-    email: "john@example.com",
-    avatar: null,
-  });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState();
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+
+    if (storedUser) {
+      try {
+        const parsed = JSON.parse(storedUser);
+        setUser(parsed);
+        setIsLoggedIn(true);
+      } catch (err) {
+        console.error("Invalid user data:", err);
+      }
+    }
+  }, []);
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUser(null);
     setIsUserMenuOpen(false);
+    localStorage.removeItem("user");
   };
 
   const handleLogin = () => {
-    // Demo login - replace with actual auth
-    setIsLoggedIn(true);
-    setUser({
-      name: "John Doe",
-      email: "john@example.com",
-      avatar: null,
-    });
+    navigate('/auth')
   };
 
   // const navigate = (page) => {
@@ -64,10 +59,11 @@ const Navbar = () => {
           {/* Logo */}
           <div className="flex items-center">
             <div className="flex items-center space-x-2">
-              <Heart className="w-8 h-8 text-red-500" />
+              {/* <Heart className="w-8 h-8 text-red-500" />
               <span className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
                 BandhanBliss
-              </span>
+              </span> */}
+              <img src="/logo.png" className="h-20 w-auto object-contain" />
             </div>
           </div>
 
@@ -76,7 +72,9 @@ const Navbar = () => {
             {navItems.map((item) => (
               <button
                 key={item.key}
-                onClick={() => navigate(item.key === "home" ? "/" : `/${item.key}`)}
+                onClick={() =>
+                  navigate(item.key === "home" ? "/" : `/${item.key}`)
+                }
                 className={`px-4 py-2 rounded-lg capitalize text-sm font-medium transition-all duration-200 ${
                   currentPage === item.key
                     ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md transform scale-105"
@@ -196,7 +194,9 @@ const Navbar = () => {
               {navItems.map((item) => (
                 <button
                   key={item.key}
-                  onClick={() => navigate(item.key === "home" ? "/" : `/${item.key}`)}
+                  onClick={() =>
+                    navigate(item.key === "home" ? "/" : `/${item.key}`)
+                  }
                   className={`block px-4 py-3 rounded-lg text-base font-medium w-full text-left transition-all duration-200 ${
                     currentPage === item.key
                       ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md"

@@ -170,7 +170,7 @@ const HomePage = () => {
             </div>
           </div>
         </div> */}
-         <img src={b1} alt="banner" className="w-full h-full object-fit rounded-sm" />
+         <img src={b1} alt="banner" className="w-full h-full object-fit rounded-sm" onClick={()=>navigate('/products')}/>
       </div>
 
       {/* Offers Section */}

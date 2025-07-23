@@ -132,9 +132,10 @@ const LoginPage = () => {
           <div className="bg-white rounded-2xl shadow-2xl p-8 backdrop-blur-lg bg-opacity-95">
             {/* Header */}
             <div className="text-center mb-8">
-              <div className="flex justify-center items-center mb-4">
-                <Heart className="w-12 h-12 text-red-500 mr-2" />
-                <h1 className="text-3xl font-bold text-gray-800">RakhiStore</h1>
+              <div className="flex justify-center items-center">
+                {/* <Heart className="w-12 h-12 text-red-500 mr-2" />
+                <h1 className="text-3xl font-bold text-gray-800">RakhiStore</h1> */}
+                <img src="/logo.png" className="h-40 w-auto object-contain" />
               </div>
               <h2 className="text-2xl font-semibold text-gray-700">
                 {isLogin ? "Welcome Back!" : "Create Account"}
