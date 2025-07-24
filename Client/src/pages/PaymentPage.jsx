@@ -103,7 +103,7 @@ const PaymentPage = () => {
       try {
         if (!cashfreeRef.current) {
           cashfreeRef.current = await load({
-            mode: "sandbox", // or "sandbox" for testing
+            mode: "production", // or "sandbox" for testing
           });
         }
       } catch (error) {

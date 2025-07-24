@@ -4,6 +4,7 @@ import r5 from '../assets/r2.jpg'
 import r1 from '../assets/r3.webp'
 import r3 from '../assets/r5.jpg'
 import r6 from '../assets/r4.webp'
+import r4 from '../assets/r6.jpg'
 import b1 from '../assets/b1.avif'
 import Navbar from "../components/NavBar";
 import Footer from "../components/Footer";
@@ -76,8 +77,7 @@ const HomePage = () => {
       name: "Combo Pack (Set of 3)",
       price: 399,
       originalPrice: 599,
-      image:
-        "https://images.unsplash.com/photo-1597149443807-35488c38daef?w=400&h=400&fit=crop",
+      image:r4,
       offer: "BUY 1 GET 1",
       description:
         "Complete combo pack with 3 different styled rakhis. Perfect for families with multiple brothers.",

@@ -17,7 +17,7 @@ const createPayment = async (req, res) => {
 
     // Call service
     const response = await axios.post(
-      "https://sandbox.cashfree.com/pg/orders",
+      "https://api.cashfree.com/pg/orders",
       {
         order_id,
         order_amount: amount,
@@ -70,7 +70,7 @@ const verifyPayment = async (req, res) => {
   }
 
   try {
-    const response = await axios.get(`https://sandbox.cashfree.com/pg/orders/${orderId}`, {
+    const response = await axios.get(`https://api.cashfree.com/pg/orders/${orderId}`, {
       headers: {
         'x-client-id': process.env.CLIENT_ID,
         'x-client-secret': process.env.CLIENT_SECRET,
