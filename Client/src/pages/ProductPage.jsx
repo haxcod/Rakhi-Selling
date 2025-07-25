@@ -288,7 +288,7 @@ const ProductPage = () => {
         <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <h1 className="text-4xl font-bold mb-4">Rakhi Collection 2024</h1>
+              <h1 className="text-4xl font-bold mb-4">Rakhi Collection 2025</h1>
               <p className="text-xl opacity-90">
                 Celebrate the bond of love with our beautiful rakhi designs
               </p>

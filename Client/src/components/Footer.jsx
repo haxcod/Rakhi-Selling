@@ -38,11 +38,11 @@ const Footer = () => {
             <div className="space-y-2">
               <div className="flex items-center">
                 <Phone className="w-4 h-4 mr-2" />
-                <span className="text-gray-300">+91 98765 43210</span>
+                <span className="text-gray-300">+91 95401 26491</span>
               </div>
               <div className="flex items-center">
                 <Mail className="w-4 h-4 mr-2" />
-                <span className="text-gray-300">info@rakhistore.com</span>
+                <span className="text-gray-300">support@bandhanbliss.shop</span>
               </div>
               <div className="flex items-center">
                 <MapPin className="w-4 h-4 mr-2" />
@@ -53,7 +53,7 @@ const Footer = () => {
         </div>
         <div className="mt-8 pt-8 border-t border-gray-700 text-center">
           <p className="text-gray-300">
-            &copy; 2024 RakhiStore. All rights reserved.
+            &copy; 2025 BandhanBliss. All rights reserved.
           </p>
         </div>
       </div>

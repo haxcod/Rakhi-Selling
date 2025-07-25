@@ -53,12 +53,14 @@ const PaymentPage = () => {
   const location = useLocation();
   const { order } = location.state || {};
 
+
   useEffect(() => {
     const stored = localStorage.getItem("addresses");
     if (stored) {
       const parsed = JSON.parse(stored);
       setSavedAddresses(parsed);
-
+     console.log(order);
+     
       // Optionally restore selected address
       if (parsed.length > 0) {
         setSelectedAddress(parsed[0].id.toString());
@@ -585,37 +587,17 @@ const PaymentPage = () => {
                     </span>
                     <span>
                       ₹
-                      {order.items.reduce(
-                        (sum, item) => sum + item.price * item.qty,
-                        0
-                      )}
+                      {order.totalAmount}
                     </span>
                   </div>
-                  {/* <div className="flex justify-between text-sm">
-                    <span>Delivery Charges</span>
-                    <span
-                      className={deliveryCharge === 0 ? "text-green-600" : ""}
-                    >
-                      {deliveryCharge === 0 ? "FREE" : `₹${deliveryCharge}`}
-                    </span>
-                  </div> */}
-                  {(() => {
-                    const actualTotal = order.items.reduce(
-                      (sum, item) => sum + item.price * item.qty,
-                      0
-                    );
-
-                    if (actualTotal !== order.totalAmount) {
-                      return (
-                        <div className="text-xs text-green-600">
-                          🎉 You saved ₹{actualTotal - order.totalAmount} using
+                   <div className="text-xs text-green-600">
+                        {order.deliveryCharge ?  `Delivery Charges ₹${order.deliveryCharge}` :""}
+                        </div> 
+{/* 
+                   <div className="text-xs text-green-600">
+                          🎉 You saved ₹{order}  using
                           coupon!
-                        </div>
-                      );
-                    }
-
-                    return null;
-                  })()}
+                        </div> */}
                 </div>
 
                 <div className="border-t border-gray-200 pt-4 mb-6">

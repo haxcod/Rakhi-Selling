@@ -79,6 +79,7 @@ const CartPage = () => {
   const handleCheckOut =()=>{
     const order = {
     items: cartItems,
+    deliveryCharge:deliveryCharge,
     totalAmount: total, // you should define this function
     date: new Date().toISOString()
   };

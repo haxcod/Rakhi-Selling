@@ -85,7 +85,7 @@ const LoginPage = () => {
           email: formData.email,
           password: formData.password,
         });
-        alert("Login successful! Welcome to RakhiStore!");
+        alert("Login successful! Welcome to BandhanBliss!");
 
         // Optionally save user data/token in localStorage or context
         localStorage.setItem("user", JSON.stringify(response?.data?.user));
@@ -93,7 +93,7 @@ const LoginPage = () => {
       } else {
         // Signup
         await axios.post("https://bandhanbliss.vercel.app/api/user", formData);
-        alert("Account created successfully! Welcome to RakhiStore!");
+        alert("Account created successfully! Welcome to BandhanBliss!");
         setIsLogin(true);
         setFormData({
           name: "",
