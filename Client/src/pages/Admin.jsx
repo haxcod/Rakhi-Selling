@@ -208,11 +208,12 @@ const AdminPanel = () => {
       );
       console.log(res);
       console.log(orders);
+      
 
       // On success, update local state
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
-          order._id === orderId ? { ...order, status: "accepted" } : order
+          order._id === orderId ? { ...order, status: res.data.order.status } : order
         )
       );
     } catch (err) {
