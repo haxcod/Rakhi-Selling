@@ -37,8 +37,7 @@ const createPayment = async (req, res) => {
         headers: {
           "x-client-id": CLIENT_ID,
           "x-client-secret": CLIENT_SECRET,
-          "x-api-version": "2022-09-01",
-          "Content-Type": "application/json",
+          "x-api-version": "2023-08-01",
         },
       }
     );
@@ -49,14 +48,21 @@ const createPayment = async (req, res) => {
     res.status(200).json({ success: true, order_id, payment_session_id });
 
   } catch (error) {
-    console.error("❌ Error in creating payment:", error.response?.data || error.message);
-    res.status(401).json({
-      success: false,
-      message: "Payment creation failed",
-      error: error.response?.data || error.message,
-    });
+  console.error("❌ Error in creating payment:");
+  if (error.response) {
+    console.error("Status:", error.response.status);
+    console.error("Data:", error.response.data);
+    console.error("Headers:", error.response.headers);
+  } else {
+    console.error("Error Message:", error.message);
   }
-};
+  res.status(401).json({
+    success: false,
+    message: "Payment creation failed",
+    error: error.response?.data || error.message,
+  });
+}
+}
 
 // ✅ Verify Payment Controller
 const verifyPayment = async (req, res) => {
@@ -74,7 +80,7 @@ const verifyPayment = async (req, res) => {
       headers: {
         'x-client-id': process.env.CLIENT_ID,
         'x-client-secret': process.env.CLIENT_SECRET,
-        'x-api-version': '2025-01-01'
+        'x-api-version': '2023-08-01',
       }
     });
 
