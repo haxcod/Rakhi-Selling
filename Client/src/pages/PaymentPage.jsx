@@ -621,10 +621,7 @@ const PaymentPage = () => {
                   handleSubmit={handlePayment}
                   isProgress={isLoading}
                   text={`Place Order ₹
-                  ${order.items.reduce(
-                    (sum, item) => sum + item.price * item.qty,
-                    0
-                  )}`}
+                  ${order.totalAmount}`}
                 />
 
                 <div className="mt-4 text-center">
