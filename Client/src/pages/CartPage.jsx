@@ -43,11 +43,11 @@ const CartPage = () => {
   };
 
   const applyPromoCode = () => {
-    if (promoCode.toLowerCase() === "rakhi2025") {
-      setAppliedPromo({ code: "RAKHI2025", discount: 50, type: "fixed" });
+    if (promoCode.toLowerCase() === "bandhanfirst") {
+      setAppliedPromo({ code: "RAKHI2025", discount: 29, type: "fixed" });
       setPromoCode("");
-    } else if (promoCode.toLowerCase() === "save10") {
-      setAppliedPromo({ code: "SAVE10", discount: 10, type: "percentage" });
+    } else if (promoCode.toLowerCase() === "save10nextbykundanashish") {
+      setAppliedPromo({ code: "SAVE10NEXTBYKUNDANASHISH", discount: 10, type: "percentage" });
       setPromoCode("");
     } else {
       alert("Invalid promo code");
