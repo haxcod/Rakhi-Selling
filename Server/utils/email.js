@@ -25,7 +25,7 @@ const sendConfirmEmail = async ({ email, name, orderId, items, total, paymentMet
     const mailOptions = {
         from: process.env.EMAIL_USERNAME,
         to: email,
-        subject: "🎉 Your RakhiStore Order Has Been Accepted!",
+        subject: "🎉 Your BandhanBliss Order Has Been Processed!",
         html: `
       <div style="font-family: Arial, sans-serif; color: #333;">
         <h2 style="color: #4CAF50;">Thank you for your order!</h2>
@@ -49,7 +49,7 @@ const sendConfirmEmail = async ({ email, name, orderId, items, total, paymentMet
         </table>
 
         <p style="margin-top: 15px;"><strong>Total Paid:</strong> ₹${total}</p>
-        <p><strong>Payment Method:</strong> ${paymentMethod}</p>
+        <p><strong>Payment Method:</strong> ${paymentMethod ==="upi"?"Online payment":"Cash On"}</p>
 
         <h4>📍 Shipping Address:</h4>
         <p>${address.replace(/\n/g, "<br>")}</p>
