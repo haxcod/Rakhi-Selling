@@ -33,7 +33,7 @@ const orderCreate = async (req, res) => {
     process.nextTick(async () => {
       try {
         await sendConfirmEmail({
-          status: "processed",
+          status: "Processed",
           email: order.user.email,
           name: order.user.name,
           items: order.items,
@@ -93,7 +93,7 @@ const orderUpdate = async (req, res) => {
       process.nextTick(async () => {
         try {
           await sendConfirmEmail({
-            status: status,
+            status: "Accepted",
             email: updated.user.email,
             name: updated.user.name,
             orderId: updated._id,
