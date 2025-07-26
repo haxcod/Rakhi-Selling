@@ -30,6 +30,23 @@ const orderCreate = async (req, res) => {
     }
 
     const order = await createOrder(req.body);
+    process.nextTick(async () => {
+      try {
+        await sendConfirmEmail({
+          status: "processed",
+          email: order.user.email,
+          name: order.user.name,
+          items: order.items,
+          total: order.totalAmount,
+          paymentMethod: order.paymentMethod,
+          address: order.address,
+        });
+
+        console.log("✅  sent successfully");
+      } catch (error) {
+        console.error("❌ Error sending:", error.message);
+      }
+    });
     res.status(201).json({ success: true, order });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
@@ -46,7 +63,7 @@ const userOrderList = async (req, res) => {
 
     const orders = await getOrders(userId);
     res.json(orders);
-    
+
   } catch (err) {
     console.error("Error fetching orders:", err.message);
     res.status(500).json({ message: 'Failed to fetch orders' });
@@ -76,6 +93,7 @@ const orderUpdate = async (req, res) => {
       process.nextTick(async () => {
         try {
           await sendConfirmEmail({
+            status: status,
             email: updated.user.email,
             name: updated.user.name,
             orderId: updated._id,
