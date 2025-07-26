@@ -57,7 +57,7 @@ const sendConfirmEmail = async ({status, email, name, orderId, items, total, pay
         <p>We will notify you once your order is shipped.</p>
 
         <p style="margin-top: 20px;">Thank you for shopping with us!</p>
-        <p>~ Team RakhiStore</p>
+        <p>~ Team BandhanBliss</p>
       </div>
     `,
     };

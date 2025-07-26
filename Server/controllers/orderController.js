@@ -6,11 +6,10 @@ const {
 } = require('../services/orderService');
 const sendConfirmEmail = require('../utils/email');
 
-// Create
+// Create Order
 const orderCreate = async (req, res) => {
   try {
     const { user, items, totalAmount, address, paymentMethod } = req.body;
-
 
     // Basic validations
     if (!user) throw new Error("User ID is required");
@@ -22,7 +21,6 @@ const orderCreate = async (req, res) => {
       throw new Error("Address is required");
     if (!paymentMethod) throw new Error("Payment method is required");
 
-    // Optional: validate each item
     for (const item of items) {
       if (!item.product) throw new Error("Each item must have a product ID");
       if (!item.quantity || item.quantity <= 0)
@@ -30,7 +28,9 @@ const orderCreate = async (req, res) => {
     }
 
     const order = await createOrder(req.body);
-    process.nextTick(async () => {
+    console.log("✅ Order created:", order._id);
+
+    setImmediate(async () => {
       try {
         await sendConfirmEmail({
           status: "Processed",
@@ -41,18 +41,25 @@ const orderCreate = async (req, res) => {
           paymentMethod: order.paymentMethod,
           address: order.address,
         });
-
-        console.log("✅  sent successfully");
+        console.log("✅ Confirmation email sent successfully");
       } catch (error) {
-        console.error("❌ Error sending:", error.message);
+        console.error("❌ Error sending confirmation email:", error.message);
       }
     });
-    res.status(201).json({ success: true, order });
+
+    // Safe response (hide internal MongoDB IDs)
+    const safeOrder = order.toObject();
+    delete safeOrder.user._id;
+
+    res.status(201).json({ success: true, order: safeOrder });
+
   } catch (err) {
+    console.error("❌ Error creating order:", err.message);
     res.status(400).json({ success: false, message: err.message });
   }
 };
 
+// Get Orders of a Specific User
 const userOrderList = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -62,35 +69,35 @@ const userOrderList = async (req, res) => {
     }
 
     const orders = await getOrders(userId);
-    res.json(orders);
+    res.json({ success: true, orders });
 
   } catch (err) {
-    console.error("Error fetching orders:", err.message);
+    console.error("❌ Error fetching orders for user:", req.params.id, err.message);
     res.status(500).json({ message: 'Failed to fetch orders' });
   }
 };
 
-
-// Get all
+// Get All Orders (Admin)
 const orderList = async (req, res) => {
   try {
     const orders = await getAllOrders();
     res.json({ success: true, orders });
   } catch (err) {
+    console.error("❌ Error fetching all orders:", err.message);
     res.status(500).json({ success: false, message: err.message });
   }
 };
 
-// Update
+// Update Order Status
 const orderUpdate = async (req, res) => {
   try {
     const { status } = req.body;
+    const orderId = req.params.id;
 
-    const updated = await updateOrder(req.params.id, req.body);
+    const updated = await updateOrder(orderId, req.body);
+
     if (status === "accepted") {
-      console.log(updated);
-
-      process.nextTick(async () => {
+      setImmediate(async () => {
         try {
           await sendConfirmEmail({
             status: "Accepted",
@@ -102,22 +109,23 @@ const orderUpdate = async (req, res) => {
             paymentMethod: updated.paymentMethod,
             address: updated.address,
           });
-
-
-          console.log("✅  sent successfully");
+          console.log("✅ Order accepted email sent");
         } catch (error) {
-          console.error("❌ Error sending:", error.message);
+          console.error("❌ Error sending accepted email:", error.message);
         }
       });
     }
-    res.json({ success: true, order: updated });
+
+    const safeUpdate = updated.toObject();
+    delete safeUpdate.user._id;
+
+    res.json({ success: true, order: safeUpdate });
+
   } catch (err) {
+    console.error("❌ Error updating order:", err.message);
     res.status(400).json({ success: false, message: err.message });
   }
 };
-
-
-
 
 module.exports = {
   orderCreate,

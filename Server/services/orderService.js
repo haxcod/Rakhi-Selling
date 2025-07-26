@@ -3,13 +3,17 @@ const Order = require('../model/orderModel');
 // CREATE
 const createOrder = async (data) => {
   try {
-    const order = await Order.create(data);
+    const createdOrder = await Order.create(data);
+    const order = await Order.findById(createdOrder._id)
+      .populate("user", "email name")
+      .populate("items.product", "name price");
     return order;
   } catch (error) {
     console.error("Error creating order:", error.message);
     throw new Error("Failed to create order");
   }
 };
+
 
 // GET ALL
 const getAllOrders = async () => {
